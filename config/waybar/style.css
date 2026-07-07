@@ -20,7 +20,7 @@ window#waybar {
     color: #ffffff;
     background: #E53935;
 }
-#clock, #battery, #network, #pulseaudio, #backlight, #tray {
+#clock, #battery, #network, #pulseaudio, #backlight, #tray, #cpu, #memory {
     padding: 0 10px;
 }
 #battery.warning { color: #EBCB8B; }
