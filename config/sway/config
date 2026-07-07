@@ -96,7 +96,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 floating_modifier $mod normal
-tiling_drag modifier titlebar
+tiling_drag enable
 
 ### Workspaces (icons match i3)
 set $ws1 "1:  Terminal"
