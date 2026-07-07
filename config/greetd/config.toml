@@ -1,8 +1,9 @@
 # greetd — minimal Wayland login daemon (replaces SDDM; no X dependency).
-# tuigreet is a console greeter that launches the sway session after auth.
+# Runs the ReGreet graphical greeter on `cage` (a tiny wlroots kiosk compositor).
+# ReGreet shows a wallpaper, remembers the last username, and lists sessions.
 [terminal]
 vt = 1
 
 [default_session]
-command = "tuigreet --time --remember --asterisks --cmd sway"
+command = "cage -s -- regreet"
 user = "greeter"
