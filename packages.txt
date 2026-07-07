@@ -37,7 +37,8 @@ xss-lock
 dex
 
 ## Applications
-kitty          # Terminal emulator
+kitty          # Terminal emulator (bound to Super+Return)
+alacritty      # Terminal emulator (GPU, Wayland-native; font in config/alacritty)
 zed            # Code editor
 firefox        # Web browser
 thunar         # File manager

@@ -1,0 +1,7 @@
+# Alacritty — minimal config. Font sized for Wayland (sway) output scale 1.6
+# on the 2.5k HiDPI panel. Alacritty auto-reloads this file on save.
+[font]
+size = 14.0
+
+[font.normal]
+family = "FiraCode Nerd Font"

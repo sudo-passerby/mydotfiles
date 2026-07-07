@@ -107,6 +107,7 @@ sudo pacman -S --noconfirm \
 print_status "Installing applications..."
 sudo pacman -S --noconfirm \
     kitty \
+    alacritty \
     zed \
     firefox \
     thunar \
