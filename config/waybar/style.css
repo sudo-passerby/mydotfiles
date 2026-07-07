@@ -1,0 +1,27 @@
+* {
+    font-family: "Hack Nerd Font";
+    font-size: 14px;
+    min-height: 0;
+}
+window#waybar {
+    background: #2f343f;
+    color: #f3f4f5;
+}
+#workspaces button {
+    padding: 0 8px;
+    color: #676E7D;
+    background: transparent;
+}
+#workspaces button.focused {
+    color: #ffffff;
+    background: #81A1C1;
+}
+#workspaces button.urgent {
+    color: #ffffff;
+    background: #E53935;
+}
+#clock, #battery, #network, #pulseaudio, #backlight, #tray {
+    padding: 0 10px;
+}
+#battery.warning { color: #EBCB8B; }
+#battery.critical { color: #E53935; }
