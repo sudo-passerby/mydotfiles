@@ -1,0 +1,8 @@
+# greetd — minimal Wayland login daemon (replaces SDDM; no X dependency).
+# tuigreet is a console greeter that launches the sway session after auth.
+[terminal]
+vt = 1
+
+[default_session]
+command = "tuigreet --time --remember --asterisks --cmd sway"
+user = "greeter"
