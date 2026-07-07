@@ -76,16 +76,20 @@ sudo pacman -S --needed --noconfirm \
     xdg-desktop-portal-wlr
 
 # Optional: wl-clip-persist keeps clipboard content alive after the source app
-# exits. AUR-only — install if an AUR helper is present, else skip (cliphist
-# history still covers re-selecting recent copies).
-if command -v paru &> /dev/null; then
+# exits. Available as a prebuilt package in the CachyOS repo (which this setup
+# enables); on stock Arch it is AUR-only. Try the repo first, then an AUR helper,
+# else skip (cliphist history still covers re-selecting recent copies).
+if pacman -Si wl-clip-persist &> /dev/null; then
+    sudo pacman -S --needed --noconfirm wl-clip-persist || \
+        print_warning "wl-clip-persist install failed; skipping (optional)"
+elif command -v paru &> /dev/null; then
     paru -S --needed --noconfirm wl-clip-persist || \
         print_warning "wl-clip-persist install failed; skipping (optional)"
 elif command -v yay &> /dev/null; then
     yay -S --needed --noconfirm wl-clip-persist || \
         print_warning "wl-clip-persist install failed; skipping (optional)"
 else
-    print_warning "No AUR helper (paru/yay) found — skipping optional wl-clip-persist"
+    print_warning "wl-clip-persist unavailable (no repo pkg, no AUR helper) — skipping (optional)"
 fi
 
 print_status "Installing display and window management..."

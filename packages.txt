@@ -21,7 +21,7 @@ swappy             # screenshot annotation UI
 wl-clipboard       # wl-copy / wl-paste (Wayland clipboard CLI)
 cliphist           # clipboard history (replaces copyq)
 xdg-desktop-portal-wlr  # wlroots portal backend (screenshare/screenshot)
-## AUR (optional): wl-clip-persist — keeps clipboard after source app closes
+wl-clip-persist    # optional: keeps clipboard after source app closes (CachyOS repo; AUR on stock Arch)
 
 ## Display Manager & Login
 sddm
