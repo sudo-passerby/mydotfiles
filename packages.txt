@@ -1,41 +1,47 @@
-# i3 Developer Setup - Complete Package List
-# All packages required for this i3 configuration
+# sway (Wayland) Developer Setup - Complete Package List
+# All packages required for this sway configuration
 
-## Core i3 Window Manager
-i3-wm
-i3blocks
-i3lock
-rofi
-polybar
+## Wayland / sway window manager
+sway               # Wayland compositor, i3-compatible config
+swaybg             # wallpaper
+swayidle           # idle management (lock/dpms)
+swaylock           # screen locker
+waybar             # status bar (replaces polybar on Wayland)
+fuzzel             # native Wayland app launcher (replaces rofi on Wayland)
+grim               # screenshot capture
+slurp              # region selector for screenshots
+swappy             # screenshot annotation UI
+wl-clipboard       # wl-copy / wl-paste (Wayland clipboard CLI)
+cliphist           # clipboard history (replaces copyq)
+xdg-desktop-portal-wlr  # wlroots portal backend (screenshare/screenshot)
+wl-clip-persist    # optional: keeps clipboard after source app closes (CachyOS repo; AUR on stock Arch)
 
-## Display Manager & Login
-sddm
-sddm-kcm
-qt5-graphicaleffects
-qt5-quickcontrols2
-qt5-svg
+## Login (greetd — Wayland, no X server)
+greetd             # minimal Wayland login daemon
+greetd-regreet     # graphical greeter (wallpaper, remembers last user)
+greetd-tuigreet    # console greeter (lightweight fallback)
+cage               # tiny wlroots compositor that hosts regreet
 
-## Compositor & Effects
-picom
-dunst
-xss-lock
-dex
+## Session utilities (sway composites natively — no picom/compositor needed)
+dunst              # notification daemon (Wayland-native)
+dex                # XDG autostart
 
 ## Applications
-kitty          # Terminal emulator
+kitty          # Terminal emulator (bound to Super+Return)
+alacritty      # Terminal emulator (GPU, Wayland-native; font in config/alacritty)
 zed            # Code editor
 firefox        # Web browser
 thunar         # File manager
 thunar-archive-plugin
 file-roller    # Archive manager
 xarchiver      # Alternative archive manager
-feh            # Image viewer
-libwebp        # feh/imlib2 loader: WEBP
-libavif        # feh/imlib2 loader: AVIF (common on modern sites)
-libheif        # feh/imlib2 loader: HEIC/HEIF
+imv            # Image viewer (Wayland-native, replaces feh)
+libwebp        # image loader: WEBP
+libavif        # image loader: AVIF (common on modern sites)
+libheif        # image loader: HEIC/HEIF
 mupdf          # PDF viewer
 mpv            # Media player
-flameshot      # Screenshot tool
+# (screenshots: grim + slurp + swappy — listed in the Wayland/sway section)
 
 ## Fonts & Typography
 ttf-hack-nerd
@@ -65,12 +71,12 @@ network-manager-applet
 xdg-utils
 xdg-desktop-portal       # Portal (browser file dialogs, screenshare)
 xdg-desktop-portal-gtk   # GTK backend for the portal
+xdg-desktop-portal-wlr   # wlroots backend (screenshot/screencast on sway)
 gvfs                     # Virtual FS for GTK file chooser (places/recent/mounts)
-xorg-xrandr       # Display configuration
-xorg-xsetroot
+xorg-xwayland     # runs X11 apps inside sway (Steam, some Electron apps, etc.)
+xorg-xrandr       # required by Steam; display query for XWayland apps
 qt5ct             # Qt5 theme configuration
 kvantum           # Qt theme engine
-xclip             # Clipboard CLI (needed for flameshot image copy on X11)
 
 ## Kernel (from CachyOS repo — REQUIRED for internal speakers on the ASUS TUF
 ## A14 FA401EA; stock Arch `linux` has no driver for its RT721 SDCA amp)

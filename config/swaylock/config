@@ -1,0 +1,14 @@
+# swaylock — Nord-ish lock screen
+color=2f343f
+inside-color=2f343f
+ring-color=81A1C1
+key-hl-color=81A1C1
+line-color=2f343f
+separator-color=2f343f
+text-color=f3f4f5
+inside-wrong-color=E53935
+ring-wrong-color=E53935
+indicator-radius=100
+indicator-thickness=8
+show-failed-attempts
+ignore-empty-password

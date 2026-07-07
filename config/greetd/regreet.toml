@@ -1,0 +1,16 @@
+# ReGreet — graphical greetd greeter. Remembers last username + session,
+# so only the password needs typing. Wallpaper is a system-readable copy at
+# /usr/share/backgrounds/ (the `greeter` user cannot read ~/Pictures).
+[background]
+path = "/usr/share/backgrounds/greetd-login.jpg"
+fit = "Cover"
+
+[GTK]
+application_prefer_dark_theme = true
+
+[appearance]
+greeting_msg = "Welcome back"
+
+[commands]
+reboot = ["systemctl", "reboot"]
+poweroff = ["systemctl", "poweroff"]

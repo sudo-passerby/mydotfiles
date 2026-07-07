@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# i3 Developer Setup - Configuration Installation Script
+# sway (Wayland) Developer Setup - Configuration Installation Script
 # This script copies all configuration files to their proper locations
 
 set -e
@@ -33,7 +33,7 @@ print_error() {
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
 
-print_status "Installing i3 Developer configurations..."
+print_status "Installing sway (Wayland) Developer configurations..."
 print_status "Dotfiles directory: $DOTFILES_DIR"
 
 # Create backup directory
@@ -60,14 +60,15 @@ backup_and_copy() {
 # Install user configurations
 print_status "Installing user configurations..."
 
-backup_and_copy "$DOTFILES_DIR/config/i3" "$HOME/.config/i3" "i3"
-backup_and_copy "$DOTFILES_DIR/config/i3blocks" "$HOME/.config/i3blocks" "i3blocks"
 backup_and_copy "$DOTFILES_DIR/config/kitty" "$HOME/.config/kitty" "kitty"
-backup_and_copy "$DOTFILES_DIR/config/polybar" "$HOME/.config/polybar" "polybar"
-backup_and_copy "$DOTFILES_DIR/config/picom" "$HOME/.config/picom" "picom"
-backup_and_copy "$DOTFILES_DIR/config/rofi" "$HOME/.config/rofi" "rofi"
+backup_and_copy "$DOTFILES_DIR/config/alacritty" "$HOME/.config/alacritty" "alacritty"
+# Wayland / sway session
+backup_and_copy "$DOTFILES_DIR/config/sway" "$HOME/.config/sway" "sway"
+backup_and_copy "$DOTFILES_DIR/config/waybar" "$HOME/.config/waybar" "waybar"
+backup_and_copy "$DOTFILES_DIR/config/fuzzel" "$HOME/.config/fuzzel" "fuzzel"
+backup_and_copy "$DOTFILES_DIR/config/swaylock" "$HOME/.config/swaylock" "swaylock"
+chmod +x "$HOME/.config/sway/scripts/wallpaper.sh" 2>/dev/null || true
 backup_and_copy "$DOTFILES_DIR/config/dunst" "$HOME/.config/dunst" "dunst"
-backup_and_copy "$DOTFILES_DIR/config/flameshot" "$HOME/.config/flameshot" "flameshot"
 backup_and_copy "$DOTFILES_DIR/config/xdg-desktop-portal" "$HOME/.config/xdg-desktop-portal" "xdg-desktop-portal"
 backup_and_copy "$DOTFILES_DIR/config/fontconfig" "$HOME/.config/fontconfig" "fontconfig"
 backup_and_copy "$DOTFILES_DIR/config/gtk-3.0" "$HOME/.config/gtk-3.0" "GTK3"
@@ -78,7 +79,6 @@ backup_and_copy "$DOTFILES_DIR/config/nvim" "$HOME/.config/nvim" "Neovim"
 # Copy single files
 cp "$DOTFILES_DIR/config/mimeapps.list" "$HOME/.config/"
 cp "$DOTFILES_DIR/config/gtkrc-2.0" "$HOME/.gtkrc-2.0" 2>/dev/null || true
-cp "$DOTFILES_DIR/config/Xresources" "$HOME/.Xresources" 2>/dev/null || true
 cp "$DOTFILES_DIR/config/wallpaper.jpg" "$HOME/.config/wallpaper.jpg" 2>/dev/null || true
 
 # zsh config (interactive + login env). Back up any existing ones first.
@@ -96,55 +96,45 @@ print_success "User configurations installed"
 # Install system configurations (requires sudo)
 print_status "Installing system configurations (requires sudo)..."
 
-# SDDM theme
-print_status "Installing SDDM theme..."
-sudo mkdir -p /usr/share/sddm/themes/
-sudo cp -r "$DOTFILES_DIR/themes/i3-dark" /usr/share/sddm/themes/
-print_success "SDDM theme installed"
+# greetd login configuration (Wayland; touchpad is handled by sway's input block)
+print_status "Installing greetd login configuration..."
+sudo mkdir -p /etc/greetd
+sudo cp "$DOTFILES_DIR/config/greetd/config.toml" /etc/greetd/config.toml
+sudo cp "$DOTFILES_DIR/config/greetd/regreet.toml" /etc/greetd/regreet.toml
+print_success "greetd config installed"
 
-# SDDM configuration
-print_status "Installing SDDM configuration..."
-sudo mkdir -p /etc/sddm.conf.d/
-sudo cp "$DOTFILES_DIR/config/sddm/theme.conf" /etc/sddm.conf.d/
-print_success "SDDM configuration installed"
+# Login wallpaper — copied to a system-readable path (the greeter user cannot
+# read ~/Pictures). regreet.toml points at /usr/share/backgrounds/greetd-login.jpg
+print_status "Installing login wallpaper..."
+sudo mkdir -p /usr/share/backgrounds
+sudo cp "$DOTFILES_DIR/config/wallpaper.jpg" /usr/share/backgrounds/greetd-login.jpg
+sudo chmod 644 /usr/share/backgrounds/greetd-login.jpg
+print_success "login wallpaper installed"
 
-# Touchpad: natural scrolling + tap-to-click
-print_status "Installing touchpad configuration..."
-sudo mkdir -p /etc/X11/xorg.conf.d/
-sudo cp "$DOTFILES_DIR/config/x11/30-touchpad.conf" /etc/X11/xorg.conf.d/
-print_success "Touchpad configuration installed"
+# ReGreet state dirs so it can remember the last username/session
+sudo mkdir -p /var/lib/regreet /var/cache/regreet
+sudo chown -R greeter:greeter /var/lib/regreet /var/cache/regreet 2>/dev/null || true
 
-# Disable any conflicting display manager (this setup uses SDDM)
-if systemctl is-enabled lightdm.service &> /dev/null; then
-    print_warning "Disabling conflicting display manager: lightdm"
-    sudo systemctl disable lightdm.service
-fi
-if pacman -Qq lightdm &> /dev/null; then
-    print_warning "Removing lightdm package"
-    sudo pacman -Rns --noconfirm lightdm || \
-        print_warning "Could not auto-remove lightdm (check dependencies manually)"
-fi
+# Enable greetd as the display manager
+print_status "Enabling greetd service..."
+sudo systemctl disable sddm.service 2>/dev/null || true
+sudo systemctl enable greetd.service
+print_success "greetd service enabled"
 
-# Enable SDDM
-print_status "Enabling SDDM service..."
-sudo systemctl enable sddm.service
-print_success "SDDM service enabled"
-
-# Create i3 desktop session
-print_status "Creating i3 desktop session..."
-sudo mkdir -p /usr/share/xsessions/
-sudo tee /usr/share/xsessions/i3.desktop > /dev/null << 'EOF'
+# Create sway (Wayland) desktop session
+print_status "Creating sway (Wayland) desktop session..."
+sudo mkdir -p /usr/share/wayland-sessions/
+sudo tee /usr/share/wayland-sessions/sway.desktop > /dev/null << 'EOF'
 [Desktop Entry]
-Name=i3
-Comment=improved dynamic tiling window manager
-Exec=i3
-TryExec=i3
+Name=sway
+Comment=An i3-compatible Wayland compositor
+Exec=sway
+TryExec=sway
 Type=Application
-X-LightDM-DesktopName=i3
-DesktopNames=i3
-Keywords=tiling;wm;windowmanager;window;manager;
+DesktopNames=sway
+Keywords=tiling;wm;wayland;compositor;
 EOF
-print_success "i3 desktop session created"
+print_success "sway desktop session created"
 
 # Update desktop and font databases
 print_status "Updating system databases..."
@@ -159,25 +149,16 @@ grep -q "QT_QPA_PLATFORMTHEME=qt5ct" ~/.profile 2>/dev/null || echo "export QT_Q
 grep -q "QT_STYLE_OVERRIDE=Fusion" ~/.profile 2>/dev/null || echo "export QT_STYLE_OVERRIDE=Fusion" >> ~/.profile
 grep -q "QT_AUTO_SCREEN_SCALE_FACTOR=1" ~/.profile 2>/dev/null || echo "export QT_AUTO_SCREEN_SCALE_FACTOR=1" >> ~/.profile
 grep -q "XCURSOR_SIZE=48" ~/.profile 2>/dev/null || echo "export XCURSOR_SIZE=48" >> ~/.profile
-grep -q "XDG_CURRENT_DESKTOP=i3" ~/.profile 2>/dev/null || echo "export XDG_CURRENT_DESKTOP=i3" >> ~/.profile
+grep -q "XDG_CURRENT_DESKTOP=sway" ~/.profile 2>/dev/null || echo "export XDG_CURRENT_DESKTOP=sway" >> ~/.profile
 print_success "Environment variables configured"
-
-# Set up automated lock screen recovery
-print_status "Setting up automated lock screen recovery..."
-mkdir -p ~/.config/systemd/user
-cp "$DOTFILES_DIR/config/auto-unlock.service" ~/.config/systemd/user/
-systemctl --user daemon-reload
-systemctl --user enable auto-unlock.service
-print_success "Automated lock recovery configured"
 
 print_success "🎉 Installation complete!"
 echo ""
 print_status "Configuration backup saved to: $BACKUP_DIR"
 print_status "Next steps:"
 echo "  1. Reboot your system"
-echo "  2. Select 'i3' session at login screen"
-echo "  3. Log in with your credentials"
-echo "  4. Press Super+Return to open terminal"
-echo "  5. Check ~/.config/i3/cheat-sheet.md for keybindings"
+echo "  2. Log in at the greetd/ReGreet screen (session: sway)"
+echo "  3. Press Super+Return to open a terminal"
+echo "  4. Super+d = app launcher (fuzzel), Super+Shift+v = clipboard history"
 echo ""
 print_warning "Note: You may need to restart some applications to see theme changes"

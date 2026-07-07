@@ -1,306 +1,117 @@
-# 🚀 i3 Developer Setup
+# 🚀 sway (Wayland) Developer Setup
 
-A complete, modern i3 window manager configuration optimized for developers. Features a beautiful dark theme, comprehensive application integration, and a streamlined workflow.
+A complete, modern **sway** (Wayland) tiling-WM configuration for developers, on an
+Arch/CachyOS laptop (AMD Strix Halo). Nord-inspired dark theme, an X-free session,
+and a fast keyboard-driven workflow. Migrated from an earlier i3/X11 setup — see
+[`docs/wayland-migration.md`](docs/wayland-migration.md) for the full rationale
+(the short version: X11's blocking, owner-based clipboard was hanging Chrome; Wayland
+fixes that class of bug by design).
 
-![i3 Desktop](screenshots/desktop.png)
+## ✨ Highlights
 
-## ✨ Features
-
-### 🎨 **Beautiful Dark Theme**
-- **Nord-inspired color scheme** with consistent theming
-- **SDDM login screen** with custom dark theme
-- **GTK/Qt applications** with Materia-dark theme
-- **14pt Hack Nerd Font** optimized for 14" laptops
-- **High-DPI scaling** (120 DPI) for crisp text
-
-### 🔧 **Developer-Focused**
-- **Vim-style navigation** (`Super + h/j/k/l`)
-- **Zed editor** as default with comprehensive file associations
-- **No application chooser dialogs** - instant file opening
-- **Smart workspace organization** with intuitive names
-- **Quick access shortcuts** for common development tasks
-
-### 🌍 **International Support**
-- **Full emoji support** 🚀💻📁🔥
-- **Multi-language fonts** (Chinese, Japanese, Korean, Hindi, Arabic)
-- **Comprehensive character coverage** with Noto fonts
-- **No missing character boxes** ever again
-
-### ⚡ **Performance Optimized**
-- **GPU-accelerated compositor** (picom)
-- **Hardware video decoding** for smooth wallpapers
-- **Minimal resource usage** 
-- **Fast startup times** with optimized configurations
+- **100% Wayland session** — no X server. `xorg-xwayland` is kept so X-only apps
+  (Steam, some Electron apps) still run inside sway.
+- **Reliable clipboard** — `wl-clipboard` + `cliphist` (+ `wl-clip-persist`), no more
+  stale pastes or Chrome freezes.
+- **Nord-inspired dark theme** across sway, waybar, fuzzel, swaylock and GTK/Qt apps.
+- **HiDPI done right** — integer `output scale 2.0` on the 2.5k panel (crisp, no blur).
+- **Vim-style navigation** (`Super + h/j/k/l`) and the familiar i3 keymap.
 
 ## 📋 What's Included
 
-### **Core Applications**
-- **Terminal**: kitty
-- **Editor**: Zed
-- **Browser**: Firefox
-- **File Manager**: Thunar
-- **Image Viewer**: feh
-- **PDF Viewer**: mupdf
-- **Media Player**: mpv
+### Core applications
+- **Terminals**: kitty (`Super+Return`), alacritty
+- **Editor**: Zed · **Browser**: Firefox · **Files**: Thunar
+- **Image viewer**: imv · **PDF**: mupdf · **Media**: mpv
 
-### **System Components**
-- **Window Manager**: i3
-- **Status Bar**: i3blocks & polybar
-- **Display Manager**: SDDM with custom theme
-- **Compositor**: picom
-- **Notifications**: dunst
-- **Application Launcher**: rofi
-- **Screenshot**: flameshot
+### Session components (all Wayland-native)
+- **Compositor / WM**: sway (composites natively — no picom)
+- **Status bar**: waybar
+- **Launcher**: fuzzel
+- **Lock / idle**: swaylock + swayidle
+- **Login (display manager)**: greetd + ReGreet (graphical, on `cage`)
+- **Screenshots**: grim + slurp + swappy
+- **Wallpaper**: swaybg · **Notifications**: dunst
+- **Clipboard**: wl-clipboard + cliphist (+ wl-clip-persist)
 
-### **Theming**
-- **GTK Theme**: Materia-dark
-- **Icon Theme**: Papirus-Dark
-- **Qt Theme**: Fusion with dark colors
-- **Cursor Theme**: Adwaita
-- **Font**: Hack Nerd Font 14pt
+### Theming
+- GTK: Materia-dark · Icons: Papirus · Qt: qt5ct/kvantum
+- Font: Hack Nerd Font (terminals: FiraCode Nerd Font)
 
 ## 🛠 Installation
 
 ### Prerequisites
-- **Arch Linux** (or Arch-based distribution)
-- **Internet connection** for package downloads
-- **sudo privileges** for system configuration
+- Arch Linux / CachyOS, internet connection, sudo privileges.
 
-### Quick Install
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/i3-developer-setup.git ~/dotfiles
-   cd ~/dotfiles
-   ```
-
-2. **Install packages** (takes 5-10 minutes)
-   ```bash
-   ./scripts/install-packages.sh
-   ```
-
-3. **Install configurations**
-   ```bash
-   ./scripts/install-configs.sh
-   ```
-
-4. **Reboot and enjoy!**
-   ```bash
-   reboot
-   ```
-
-### Manual Installation
-
-<details>
-<summary>Click to expand manual installation steps</summary>
-
-#### Step 1: Install Packages
+### Quick install
 ```bash
-# Update system
-sudo pacman -Sy
-
-# Install core i3
-sudo pacman -S i3-wm i3blocks i3lock rofi
-
-# Install applications
-sudo pacman -S kitty zed firefox thunar feh mupdf mpv flameshot
-
-# Install theming
-sudo pacman -S sddm picom dunst materia-gtk-theme papirus-icon-theme
-
-# Install fonts
-sudo pacman -S ttf-hack-nerd noto-fonts noto-fonts-cjk noto-fonts-emoji
+git clone https://github.com/glitchdoescode/mydotfiles.git ~/mydotfiles
+cd ~/mydotfiles
+./setup.sh          # runs install-packages.sh then install-configs.sh
+reboot
 ```
+At the greetd/ReGreet login screen, pick the **sway** session and log in.
 
-#### Step 2: Copy Configurations
-```bash
-# Copy user configs
-cp -r config/i3 ~/.config/
-cp -r config/picom ~/.config/
-cp -r config/rofi ~/.config/
-cp -r config/dunst ~/.config/
-cp -r config/fontconfig ~/.config/
-cp -r config/gtk-3.0 ~/.config/
-cp -r config/qt5ct ~/.config/
-cp config/mimeapps.list ~/.config/
-cp config/gtkrc-2.0 ~/.gtkrc-2.0
-
-# Install SDDM theme (requires sudo)
-sudo cp -r themes/i3-dark /usr/share/sddm/themes/
-sudo cp config/sddm/theme.conf /etc/sddm.conf.d/
-sudo systemctl enable sddm.service
-```
-
-#### Step 3: Create Desktop Session
-```bash
-sudo tee /usr/share/xsessions/i3.desktop > /dev/null << 'EOF'
-[Desktop Entry]
-Name=i3
-Comment=improved dynamic tiling window manager
-Exec=i3
-TryExec=i3
-Type=Application
-Keywords=tiling;wm;windowmanager;
-EOF
-```
-
-</details>
-
-## 🎮 Usage Guide
-
-### **Essential Keybindings**
-
-| Key Combination | Action |
-|----------------|--------|
-| `Super + Return` | Open terminal |
-| `Super + c` | Open Zed editor |
-| `Super + Shift + f` | Open file manager |
-| `Super + Shift + w` | Open Firefox |
-| `Super + d` | Application launcher |
-| `Super + Tab` | Window switcher |
-
-### **Window Management**
-
-| Key Combination | Action |
-|----------------|--------|
-| `Super + h/j/k/l` | Focus window (vim-style) |
-| `Super + Shift + h/j/k/l` | Move window |
-| `Super + b` | Split horizontally |
-| `Super + v` | Split vertically |
-| `Super + f` | Fullscreen toggle |
-| `Super + Shift + Space` | Float/unfloat window |
-
-### **Workspaces**
-
-| Workspace | Name | Purpose |
-|-----------|------|---------|
-| 1 | 🖥️ Terminal | Terminal sessions |
-| 2 | 💻 Code | Development work |
-| 3 | 🌐 Web | Web browsing |
-| 4 | 📁 Files | File management |
-| 5 | 🔄 Git | Version control |
-| 6 | 🐳 Docker | Containerization |
-| 7 | 🗄️ DB | Database work |
-| 8 | 💬 Chat | Communication |
-| 9 | 🎵 Music | Media playback |
-| 10 | 📋 Misc | Everything else |
-
-### **Media Keys**
+## 🎮 Keybindings
 
 | Key | Action |
 |-----|--------|
-| `Volume Up/Down` | Adjust volume |
-| `Volume Mute` | Toggle mute |
-| `Brightness Up/Down` | Adjust screen brightness |
-| `Print Screen` | Screenshot (interactive) |
+| `Super + Return` | Terminal (kitty) |
+| `Super + d` | App launcher (fuzzel) |
+| `Super + Shift + v` | Clipboard history (cliphist) |
+| `Super + c` | Zed editor |
+| `Super + Shift + f` | File manager (Thunar) |
+| `Super + Shift + w` | Firefox |
+| `Super + Shift + s` | Region screenshot → swappy |
+| `Print` | Full-screen screenshot → swappy |
+| `Super + h/j/k/l` | Focus window (vim-style) |
+| `Super + Shift + h/j/k/l` | Move window |
+| `Super + b` / `Super + v` | Split horizontal / vertical |
+| `Super + f` | Fullscreen toggle |
+| `Super + Shift + Space` | Float / unfloat |
+| `Super + 1..0` | Switch to workspace 1–10 |
+| `Super + Shift + 1..0` | Move window to workspace |
+| `Super + Shift + r` | Reload sway config |
+| `Super + Shift + e` | Exit sway (via swaynag) |
+| Volume / Brightness keys | pactl / brightnessctl |
 
-## 📁 Directory Structure
+## 📁 Directory structure
 
 ```
-dotfiles/
-├── config/                 # Application configurations
-│   ├── i3/                # i3 window manager
-│   ├── i3blocks/          # Status bar configuration
-│   ├── kitty/             # Terminal configuration  
-│   ├── polybar/           # Alternative status bar
-│   ├── sddm/              # Login screen
-│   ├── picom/             # Compositor
-│   ├── rofi/              # Application launcher
-│   ├── dunst/             # Notifications
-│   ├── fontconfig/        # Font configuration
-│   ├── gtk-3.0/           # GTK3 theming
-│   ├── qt5ct/             # Qt5 theming
-│   ├── mimeapps.list      # Default applications
-│   └── gtkrc-2.0          # GTK2 theming
-├── themes/                # Custom themes
-│   └── i3-dark/           # SDDM login theme
-├── scripts/               # Installation scripts
-│   ├── install-packages.sh
-│   └── install-configs.sh
-├── docs/                  # Documentation
-├── screenshots/           # Preview images
-├── packages.txt           # Complete package list
-└── README.md             # This file
+mydotfiles/
+├── config/
+│   ├── sway/          # sway WM config + wallpaper script
+│   ├── waybar/        # status bar (config + style.css)
+│   ├── fuzzel/        # app launcher
+│   ├── swaylock/      # lock screen
+│   ├── greetd/        # login: config.toml + regreet.toml
+│   ├── kitty/ alacritty/   # terminals
+│   ├── dunst/         # notifications
+│   ├── nvim/ zed/     # editors
+│   ├── gtk-3.0/ qt5ct/ fontconfig/   # theming
+│   ├── xdg-desktop-portal/           # portals (file dialogs, screencast)
+│   ├── zshrc zprofile mimeapps.list gtkrc-2.0 wallpaper.jpg
+│   └── ollama/        # local LLM config
+├── scripts/           # install-packages.sh, install-configs.sh
+├── docs/              # wayland-migration.md (design/rationale)
+├── packages.txt       # complete package list
+└── setup.sh           # one-command installer
 ```
 
-## 🔧 Customization
+## 🖥 Display scaling
 
-### **Changing Wallpaper**
-1. Replace the video file path in `~/.config/i3/config` line 9
-2. Or disable video wallpaper and use static image:
-   ```bash
-   # Comment out the xwinwrap line and uncomment:
-   exec --no-startup-id feh --bg-scale /path/to/your/wallpaper.jpg
-   ```
-
-### **Modifying Theme Colors**
-Edit the color variables in `~/.config/i3/config`:
-```bash
-# Developer Color Scheme (Nord-inspired)
-set $bg-color            #2f343f
-set $inactive-bg-color   #2f343f
-set $text-color          #f3f4f5
-set $inactive-text-color #676E7D
-set $urgent-bg-color     #E53935
-set $indicator-color     #00ff00
+HiDPI is set in `config/sway/config`:
 ```
-
-### **Adding Applications**
-Update MIME associations in `~/.config/mimeapps.list`:
-```ini
-[Default Applications]
-text/x-python=your-app.desktop
+output eDP-1 scale 2.0
 ```
-
-## 🐛 Troubleshooting
-
-### **Video Wallpaper Not Working**
-1. Check if xwinwrap is installed: `which xwinwrap`
-2. Verify video file exists: `ls ~/Media/Videos/`
-3. Test mpv separately: `mpv /path/to/video.mp4`
-
-### **Brightness Keys Not Working**
-1. Install brightnessctl: `sudo pacman -S brightnessctl`
-2. Add user to video group: `sudo usermod -a -G video $USER`
-3. Logout and login again
-
-### **Applications Not Opening**
-1. Update desktop database: `update-desktop-database ~/.local/share/applications`
-2. Clear icon cache: `gtk-update-icon-cache`
-3. Restart i3: `Super + Shift + r`
-
-### **Fonts Not Displaying**
-1. Rebuild font cache: `fc-cache -fv`
-2. Check font installation: `fc-list | grep -i hack`
-3. Restart applications
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+Change to `1.75` / `1.5` for smaller UI, then `Super+Shift+r` to reload. Terminal font
+sizes live in `config/kitty/kitty.conf` and `config/alacritty/alacritty.toml`.
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **i3 community** for the amazing window manager
-- **Nord theme** for color inspiration
-- **Arch Linux** for the excellent package ecosystem
-- **Font developers** for beautiful typography
-
-## 📧 Support
-
-- **GitHub Issues**: For bugs and feature requests
-- **Wiki**: For additional documentation
-- **Discussions**: For questions and community support
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-**Made with ❤️ for developers who love efficiency and beauty**
-
-*This configuration has been battle-tested in daily development work and optimized for productivity.*
+*Migrated to Wayland/sway and battle-tested in daily development. X-free by design,
+with XWayland retained for app compatibility.*
