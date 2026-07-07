@@ -66,6 +66,12 @@ backup_and_copy "$DOTFILES_DIR/config/kitty" "$HOME/.config/kitty" "kitty"
 backup_and_copy "$DOTFILES_DIR/config/polybar" "$HOME/.config/polybar" "polybar"
 backup_and_copy "$DOTFILES_DIR/config/picom" "$HOME/.config/picom" "picom"
 backup_and_copy "$DOTFILES_DIR/config/rofi" "$HOME/.config/rofi" "rofi"
+# Wayland / sway session (daily driver; i3 configs above kept as fallback)
+backup_and_copy "$DOTFILES_DIR/config/sway" "$HOME/.config/sway" "sway"
+backup_and_copy "$DOTFILES_DIR/config/waybar" "$HOME/.config/waybar" "waybar"
+backup_and_copy "$DOTFILES_DIR/config/fuzzel" "$HOME/.config/fuzzel" "fuzzel"
+backup_and_copy "$DOTFILES_DIR/config/swaylock" "$HOME/.config/swaylock" "swaylock"
+chmod +x "$HOME/.config/sway/scripts/wallpaper.sh" 2>/dev/null || true
 backup_and_copy "$DOTFILES_DIR/config/dunst" "$HOME/.config/dunst" "dunst"
 backup_and_copy "$DOTFILES_DIR/config/flameshot" "$HOME/.config/flameshot" "flameshot"
 backup_and_copy "$DOTFILES_DIR/config/xdg-desktop-portal" "$HOME/.config/xdg-desktop-portal" "xdg-desktop-portal"
@@ -145,6 +151,21 @@ DesktopNames=i3
 Keywords=tiling;wm;windowmanager;window;manager;
 EOF
 print_success "i3 desktop session created"
+
+# Create sway (Wayland) desktop session
+print_status "Creating sway (Wayland) desktop session..."
+sudo mkdir -p /usr/share/wayland-sessions/
+sudo tee /usr/share/wayland-sessions/sway.desktop > /dev/null << 'EOF'
+[Desktop Entry]
+Name=sway
+Comment=An i3-compatible Wayland compositor
+Exec=sway
+TryExec=sway
+Type=Application
+DesktopNames=sway
+Keywords=tiling;wm;wayland;compositor;
+EOF
+print_success "sway desktop session created"
 
 # Update desktop and font databases
 print_status "Updating system databases..."
