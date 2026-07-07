@@ -60,6 +60,34 @@ sudo pacman -S --noconfirm \
     rofi \
     polybar
 
+print_status "Installing Wayland / sway session stack..."
+sudo pacman -S --needed --noconfirm \
+    sway \
+    swaybg \
+    swayidle \
+    swaylock \
+    waybar \
+    fuzzel \
+    grim \
+    slurp \
+    swappy \
+    wl-clipboard \
+    cliphist \
+    xdg-desktop-portal-wlr
+
+# Optional: wl-clip-persist keeps clipboard content alive after the source app
+# exits. AUR-only — install if an AUR helper is present, else skip (cliphist
+# history still covers re-selecting recent copies).
+if command -v paru &> /dev/null; then
+    paru -S --needed --noconfirm wl-clip-persist || \
+        print_warning "wl-clip-persist install failed; skipping (optional)"
+elif command -v yay &> /dev/null; then
+    yay -S --needed --noconfirm wl-clip-persist || \
+        print_warning "wl-clip-persist install failed; skipping (optional)"
+else
+    print_warning "No AUR helper (paru/yay) found — skipping optional wl-clip-persist"
+fi
+
 print_status "Installing display and window management..."
 sudo pacman -S --noconfirm \
     sddm \

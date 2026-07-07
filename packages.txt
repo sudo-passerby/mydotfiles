@@ -8,6 +8,21 @@ i3lock
 rofi
 polybar
 
+## Wayland / sway session (daily driver; i3 kept as fallback)
+sway               # Wayland compositor, i3-compatible config
+swaybg             # wallpaper
+swayidle           # idle management (lock/dpms)
+swaylock           # screen locker
+waybar             # status bar (replaces polybar on Wayland)
+fuzzel             # native Wayland app launcher (replaces rofi on Wayland)
+grim               # screenshot capture
+slurp              # region selector for screenshots
+swappy             # screenshot annotation UI
+wl-clipboard       # wl-copy / wl-paste (Wayland clipboard CLI)
+cliphist           # clipboard history (replaces copyq)
+xdg-desktop-portal-wlr  # wlroots portal backend (screenshare/screenshot)
+## AUR (optional): wl-clip-persist — keeps clipboard after source app closes
+
 ## Display Manager & Login
 sddm
 sddm-kcm
