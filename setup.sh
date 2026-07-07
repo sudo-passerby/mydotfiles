@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# i3 Developer Setup - One-Command Installation
-# This script installs the complete i3 developer environment
+# sway (Wayland) Developer Setup - One-Command Installation
+# This script installs the complete sway developer environment
 
 set -e
 
@@ -23,8 +23,8 @@ cat << "EOF"
 ██████▓██▓▓▓▓██████▓▓▓▓██
  ██▓▓▓  ██████▀▀▀▀▓▓▓▓▓▓▓
 
-i3 Developer Setup
-Modern • Beautiful • Efficient
+sway Developer Setup
+Wayland • Minimal • Efficient
 EOF
 echo -e "${NC}"
 
@@ -53,7 +53,7 @@ print_header() {
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-print_header "🚀 i3 Developer Setup Installation"
+print_header "🚀 sway Developer Setup Installation"
 
 print_status "Starting installation process..."
 print_status "Installation directory: $SCRIPT_DIR"
@@ -109,21 +109,21 @@ cat << "EOF"
 EOF
 echo -e "${NC}"
 
-print_success "i3 Developer Setup installed successfully!"
+print_success "sway Developer Setup installed successfully!"
 echo ""
 print_status "${BOLD}Next Steps:${NC}"
 echo "  1. ${YELLOW}Reboot your system${NC}: reboot"
-echo "  2. ${YELLOW}Select 'i3' session${NC} at the login screen"
-echo "  3. ${YELLOW}Log in${NC} with your credentials"
-echo "  4. ${YELLOW}Press Super+Return${NC} to open terminal"
-echo "  5. ${YELLOW}Check keybindings${NC}: cat ~/.config/i3/cheat-sheet.md"
+echo "  2. ${YELLOW}Log in${NC} at the greetd/ReGreet screen (session: sway)"
+echo "  3. ${YELLOW}Press Super+Return${NC} to open a terminal"
+echo "  4. ${YELLOW}Edit config${NC}: ~/.config/sway/config"
 echo ""
 print_status "${BOLD}Essential Keybindings:${NC}"
 echo "  ${BLUE}Super + Return${NC}     → Terminal"
 echo "  ${BLUE}Super + c${NC}          → Code editor (Zed)"
 echo "  ${BLUE}Super + Shift + f${NC}  → File manager"
-echo "  ${BLUE}Super + d${NC}          → Application launcher"
+echo "  ${BLUE}Super + d${NC}          → Application launcher (fuzzel)"
+echo "  ${BLUE}Super + Shift + v${NC}  → Clipboard history (cliphist)"
 echo "  ${BLUE}Super + h/j/k/l${NC}    → Navigate windows (vim-style)"
 echo ""
 print_warning "Some theme changes may require restarting applications"
-print_status "Enjoy your new i3 developer environment! 🚀"
+print_status "Enjoy your new sway developer environment! 🚀"

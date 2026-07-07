@@ -52,14 +52,6 @@ for pkg in pulseaudio pulseaudio-alsa; do
     fi
 done
 
-print_status "Installing core i3 packages..."
-sudo pacman -S --noconfirm \
-    i3-wm \
-    i3blocks \
-    i3lock \
-    rofi \
-    polybar
-
 print_status "Installing Wayland / sway session stack..."
 sudo pacman -S --needed --noconfirm \
     sway \
@@ -92,16 +84,15 @@ else
     print_warning "wl-clip-persist unavailable (no repo pkg, no AUR helper) — skipping (optional)"
 fi
 
-print_status "Installing display and window management..."
+print_status "Installing login (greetd) and session utilities..."
+# greetd = minimal Wayland login daemon (no X). regreet+cage = graphical greeter
+# (wallpaper, remembers user); tuigreet = lightweight console fallback greeter.
 sudo pacman -S --noconfirm \
-    sddm \
-    sddm-kcm \
-    qt5-graphicaleffects \
-    qt5-quickcontrols2 \
-    qt5-svg \
-    picom \
+    greetd \
+    greetd-regreet \
+    greetd-tuigreet \
+    cage \
     dunst \
-    xss-lock \
     dex
 
 print_status "Installing applications..."
@@ -114,7 +105,7 @@ sudo pacman -S --noconfirm \
     thunar-archive-plugin \
     file-roller \
     xarchiver \
-    feh \
+    imv \
     libwebp \
     libavif \
     libheif \
@@ -149,12 +140,12 @@ sudo pacman -S --noconfirm \
     xdg-utils \
     xdg-desktop-portal \
     xdg-desktop-portal-gtk \
+    xdg-desktop-portal-wlr \
     gvfs \
+    xorg-xwayland \
     xorg-xrandr \
-    xorg-xsetroot \
     qt5ct \
-    kvantum \
-    xclip
+    kvantum
 
 print_status "Installing development tools..."
 sudo pacman -S --noconfirm \
