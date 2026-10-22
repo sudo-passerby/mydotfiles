@@ -51,10 +51,10 @@ exec wl-paste --type image --watch cliphist store
 exec sh -c 'command -v wl-clip-persist >/dev/null && wl-clip-persist --clipboard regular'
 
 ### Idle + lock (replaces xss-lock + i3lock)
+# No idle timeouts — screen stays on indefinitely while reading.
+# Sleep/lock happens ONLY on lid close (logind HandleLidSwitch=suspend).
+# To restore idle blanking, re-add: timeout 300 'swaylock -f' timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'
 exec swayidle -w \
-    timeout 300 'swaylock -f' \
-    timeout 600 'swaymsg "output * dpms off"' \
-    resume 'swaymsg "output * dpms on"' \
     before-sleep 'swaylock -f'
 
 ### Terminal / kill / launcher
@@ -180,3 +180,7 @@ for_window [class="feh"] floating enable
 for_window [class="Gpick"] floating enable
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
+
+### voice-instinct orb (Sway ignores app positioning): float, all workspaces, top-right under the bar
+for_window [app_id="voice-instinct"] floating enable, sticky enable, border none, resize set 128 128, move position 1128 12
+bindsym $mod+n exec ~/.local/bin/voice-instinct toggle
